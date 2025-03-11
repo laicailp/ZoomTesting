@@ -1,0 +1,185 @@
+<html>
+  <head>
+    <title>Event Page with Tiered Access</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+      .main-content {
+        margin-right: 300px; /* width of the core-sidebar */
+        padding: 20px;
+      }
+      .core-sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100vh;
+        background-color: #f5f5f5;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+      }
+      .section {
+        margin-bottom: 20px;
+      }
+      .section h3 {
+        margin-top: 0;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .button.secondary {
+        background-color: #ccc;
+        color: #333;
+      }
+      @media (max-width: 768px) {
+        .main-content {
+          margin-right: 0;
+        }
+        .core-sidebar {
+          position: static;
+          width: 100%;
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <h1>Welcome to the Event</h1>
+      <p>Explore the event and enjoy the features based on your access level.</p>
+    </div>
+    <div class="core-sidebar">
+      <div class="section sign-in-area">
+        <h3>Sign In</h3>
+        <div id="sign-in-content"></div>
+      </div>
+      <div class="section announcements">
+        <h3>Announcements</h3>
+        <ul id="announcements-list"></ul>
+      </div>
+      <div class="section resources">
+        <h3>Resources</h3>
+        <ul id="resources-list"></ul>
+      </div>
+      <div class="section surveys">
+        <h3>Surveys</h3>
+        <ul id="surveys-list"></ul>
+      </div>
+      <div class="section calendar">
+        <h3>Calendar</h3>
+        <div id="calendar-content"></div>
+      </div>
+    </div>
+    <script>
+      var userTier = 'non-authenticated'; // Change to 'email-authenticated' or 'zoom' to test
+
+      var announcements = [
+        { id: 1, text: 'Welcome to the event!' },
+        { id: 2, text: 'Don\'t forget to check out the expo!' }
+      ];
+      var resources = [
+        { id: 1, title: 'Event Guide', url: '#' },
+        { id: 2, title: 'Speaker Bios', url: '#' }
+      ];
+      var surveys = [
+        { id: 1, title: 'Feedback Survey', url: '#' }
+      ];
+      var sessions = [
+        { id: 1, title: 'Keynote Session', time: '10:00 AM' }
+      ];
+
+      function renderSignInArea() {
+        var content = document.getElementById('sign-in-content');
+        if (userTier === 'non-authenticated') {
+          content.innerHTML = `
+            <p>Sign in to get more features:</p>
+            <ul>
+              <li>Access to lobby chat</li>
+              <li>Personalized calendar</li>
+              <li>And more...</li>
+            </ul>
+            <a class="button" href="#sign-in">Sign in with Zoom</a>
+            <p>or <a href="#login">log in with email</a></p>
+          `;
+        } else {
+          content.innerHTML = `
+            <img src="https://viaplaceholder.com/50" alt="Profile Image">
+            <p>Welcome, UserName</p>
+            <a class="button secondary" href="#logout">Log out</a>
+          `;
+        }
+      }
+
+      function renderAnnouncements() {
+        var list = document.getElementById('announcements-list');
+        announcements.forEach(function(announcement) {
+          var li = document.createElement('li');
+          li.innerHTML = announcement.text;
+          if (userTier !== 'non-authenticated') {
+            li.innerHTML += ' <button class="button secondary">Mark as read</button>';
+          }
+          list.appendChild(li);
+        });
+      }
+
+      function renderResources() {
+        var list = document.getElementById('resources-list');
+        resources.forEach(function(resource) {
+          var li = document.createElement('li');
+          li.innerHTML = `<a href="${resource.url}">${resource.title}</a>`;
+          if (userTier !== 'non-authenticated') {
+            li.innerHTML += ' <button class="button secondary">Favorite</button>';
+          }
+          list.appendChild(li);
+        });
+      }
+
+      function renderSurveys() {
+        var list = document.getElementById('surveys-list');
+        surveys.forEach(function(survey) {
+          var li = document.createElement('li');
+          li.innerHTML = `<a href="${survey.url}">${survey.title}</a>`;
+          if (userTier !== 'non-authenticated') {
+            li.innerHTML += ' <span>Status: Not completed</span>';
+          }
+          list.appendChild(li);
+        });
+      }
+
+      function renderCalendar() {
+        var content = document.getElementById('calendar-content');
+        if (userTier === 'non-authenticated') {
+          content.innerHTML = `
+            <h4>Event Schedule</h4>
+            <ul>
+              ${sessions.map(s => `<li>${s.time} - ${s.title}</li>`).join('')}
+            </ul>
+          `;
+        } else {
+          content.innerHTML = `
+            <h4>Event Schedule</h4>
+            <ul>
+              ${sessions.map(s => `<li><input type="checkbox"> ${s.time} - ${s.title}</li>`).join('')}
+            </ul>
+            <p><a class="button" href="#export">Export to Calendar</a></p>
+          `;
+        }
+      }
+
+      renderSignInArea();
+      renderAnnouncements();
+      renderResources();
+      renderSurveys();
+      renderCalendar();
+    </script>
+  </body>
+</html> 
